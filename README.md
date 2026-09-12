@@ -1,4 +1,4 @@
-# Digiryte Technical Challenge - Secure & Scalable REST API
+## Digiryte Technical Challenge - Secure & Scalable REST API
 
 **Candidate:** Santhosh VS  
 **Assessment:** Round 3 Technical Challenge — Challenge 1 (Secure, Scalable API)  
@@ -7,13 +7,13 @@
 
 ---
 
-## 🚀 Overview
+### 🚀 Overview
 
 This repository contains a production-grade, secure REST API built with **Node.js**, **Express**, and **TypeScript**. It is designed around real-world security practices, demonstrating token-based authentication with active revocation, fine-grained Role-Based Access Control (RBAC), anti-replay attack protection on sensitive financial endpoints, strict server-side validation, rate-limiting, and environment secret isolation.
 
 ---
 
-## 🛠 Tech Stack
+### 🛠 Tech Stack
 
 - **Runtime & Framework:** Node.js (v20+), Express.js, TypeScript (v5+)
 - **Authentication:** JSON Web Tokens (`jsonwebtoken`), `bcryptjs`
@@ -25,7 +25,7 @@ This repository contains a production-grade, secure REST API built with **Node.j
 
 ---
 
-## 🏗 Architecture & Request Flow
+### 🏗 Architecture & Request Flow
 
 ```mermaid
 flowchart TD
@@ -46,14 +46,14 @@ flowchart TD
 
 ---
 
-## 🔒 Key Security Features Implemented
+### 🔒 Key Security Features Implemented
 
-### 1. Dual-Token JWT Auth Pattern & Active Revocation
+#### 1. Dual-Token JWT Auth Pattern & Active Revocation
 - **Access Tokens:** Short-lived (15 minutes) carrying user ID, email, role, and a unique JWT ID (`jti`).
 - **Refresh Tokens:** Long-lived (7 days) for seamless token renewal.
 - **Token Revocation (Logout / Compromise Scenario):** Upon invoking `POST /api/v1/auth/logout`, the server extracts the token's `jti` and commits it to a Redis blocklist (`token:revoked:<jti>`) with a TTL equal to the token's remaining lifespan. Any subsequent attempt to present a revoked access token is immediately rejected with HTTP `401 TOKEN_REVOKED` before reaching business logic.
 
-### 2. Role-Based Access Control (RBAC)
+#### 2. Role-Based Access Control (RBAC)
 - Enforces two distinct roles: `USER` and `ADMIN`.
 - **Permissions Grid:**
   | Endpoint | `USER` Permission | `ADMIN` Permission |
@@ -62,7 +62,7 @@ flowchart TD
   | `POST /api/v1/assets` | Creates asset assigned to self | Can create/assign asset to any specified user |
   | `DELETE /api/v1/assets/:id` | Can delete **only** assets owned by self (HTTP 403 otherwise) | Can delete **any** asset across the platform |
 
-### 3. Replay-Attack Defense (Sensitive Endpoint)
+#### 3. Replay-Attack Defense (Sensitive Endpoint)
 - Applied to `POST /api/v1/transactions/transfer`.
 - **Mechanism:**
   - Client must send custom security headers: `X-Nonce` (UUID) and `X-Timestamp` (epoch ms / ISO).
@@ -70,25 +70,25 @@ flowchart TD
   - Server executes an atomic Redis command `SET key value EX 300 NX` using `nonce:<X-Nonce>`.
   - If a attacker captures and replays the request, the second call fails at the middleware layer with HTTP `409 REPLAY_ATTACK_DETECTED`.
 
-### 4. Input Validation & Sanitization
+#### 4. Input Validation & Sanitization
 - All request parameters, bodies, and headers are validated using strict **Zod** schemas.
 - String fields undergo HTML tag stripping to prevent XSS / injection attacks.
 - Invalid requests return structured RFC7807 error responses with specific field-level validation breakdowns.
 
-### 5. Rate Limiting
+#### 5. Rate Limiting
 - **Global Rate Limiter:** 100 requests per 15-minute window per IP.
 - **Sensitive Rate Limiter:** Tighter rate limiting (10 requests/min) on `/auth/login`, `/auth/refresh`, and `/transactions/transfer`.
 
 ---
 
-## 💻 Local Development Setup
+### 💻 Local Development Setup
 
-### 1. Prerequisites
+#### 1. Prerequisites
 - Node.js (v18.x or higher)
 - npm (v9.x or higher)
 - Optional: Running Redis server (if Redis is not running locally, the application automatically logs a warning and degrades gracefully to an in-memory cache adapter for local testing).
 
-### 2. Installation
+#### 2. Installation
 ```bash
 # Clone repository
 git clone <your-repo-link>
@@ -98,7 +98,7 @@ cd digiryte-challenge-01
 npm install
 ```
 
-### 3. Environment Setup
+#### 3. Environment Setup
 Copy the example environment file:
 ```bash
 cp .env.example .env
@@ -117,7 +117,7 @@ REPLAY_NONCE_TTL_SECONDS=300
 REPLAY_MAX_TIMESTAMP_DIFF_SECONDS=300
 ```
 
-### 4. Running the Application
+#### 4. Running the Application
 ```bash
 # Run in development mode (hot reloading via tsx)
 npm run dev
@@ -134,7 +134,7 @@ npm start
 
 ---
 
-## 🧪 Verification & Automated Tests
+### 🧪 Verification & Automated Tests
 
 The repository includes comprehensive automated integration tests covering all technical evaluation criteria:
 
@@ -151,15 +151,15 @@ npm test
 
 ---
 
-## 📡 API Endpoint Reference & Testing Guide
+### 📡 API Endpoint Reference & Testing Guide
 
-### Seeded Credentials for Testing
+#### Seeded Credentials for Testing
 - **Regular User:** `email: user@example.com` | `password: Password123!` | Role: `USER`
 - **System Admin:** `email: admin@example.com` | `password: Password123!` | Role: `ADMIN`
 
 ---
 
-### 1. Authentication Endpoints
+#### 1. Authentication Endpoints
 
 #### Register New User
 ```bash
@@ -191,7 +191,7 @@ curl -X POST http://localhost:4000/api/v1/auth/logout \
 
 ---
 
-### 2. RBAC Asset Endpoints
+#### 2. RBAC Asset Endpoints
 
 #### List Assets (Role Dependent Output)
 ```bash
@@ -217,7 +217,7 @@ curl -X DELETE http://localhost:4000/api/v1/assets/ast_1 \
 
 ---
 
-### 3. Replay Defense Endpoint
+#### 3. Replay Defense Endpoint
 
 #### Execute Financial Transfer (Requires Single-Use Nonce)
 ```bash
@@ -277,7 +277,6 @@ This repository contains a pre-configured [`vercel.json`](file:///Users/sandy/Sa
 
 ---
 
-## 👤 Author
 
 **Santhosh VS**  
 Digiryte Technical Challenge Candidate  
