@@ -41,14 +41,18 @@ app.get('/health', (_req, res) => {
  */
 app.use('/api/v1', routesV1);
 
-// Paths to compiled React production bundle and static public fallback
-const clientDistPath = path.join(__dirname, '../../client/dist');
-const publicPath = path.join(__dirname, '../public');
+// Paths to compiled React production bundle (supports monorepo, Vercel, Render)
+const possibleClientDistPaths = [
+  path.join(__dirname, '../../client/dist'),
+  path.join(process.cwd(), 'client/dist'),
+  path.join(process.cwd(), 'dist'),
+];
+
+const resolvedClientDistPath = possibleClientDistPaths.find((p) => fs.existsSync(p));
+const clientDistPath = resolvedClientDistPath || path.join(__dirname, '../public');
 
 if (fs.existsSync(clientDistPath)) {
   app.use(express.static(clientDistPath));
-} else {
-  app.use(express.static(publicPath));
 }
 
 /**
@@ -59,6 +63,7 @@ app.use('*', (req, res) => {
   if (req.accepts('html') && fs.existsSync(indexPath)) {
     return res.sendFile(indexPath);
   }
+
 
   res.status(404).json({
     status: 'error',
