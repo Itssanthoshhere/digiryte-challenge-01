@@ -5,7 +5,7 @@
   "description": "Digiryte Challenge 01 - Secure REST API (Node.js/Express) + React Frontend",
   "scripts": {
     "start": "npm --prefix backend start",
-    "build": "npm install --prefix client && npm --prefix client run build && npm install --prefix backend && npm --prefix backend run build",
+    "build": "npm install --include=dev --prefix client && npm --prefix client run build && npm install --include=dev --prefix backend && npm --prefix backend run build",
     "dev:backend": "npm --prefix backend run dev",
     "dev:client": "npm --prefix client run dev"
   },
