@@ -222,24 +222,26 @@ digiryte-challenge-01/
 ```
 ---
 
-## 🚀 Production Deployment Guide
+## 🚀 100% Free Deployment Guide
 
-The project is pre-configured for **instant zero-config deployment** on Render, Vercel, Railway, or any Node.js hosting platform.
+This project can be deployed **completely free** without needing paid Redis add-ons or credit cards! The server automatically falls back to an internal TTL memory cache when Redis is absent.
 
-### Option 1: Render Deployment (Recommended Blueprint)
-This repo includes a pre-configured [`render.yaml`](file:///Users/sandy/Santhosh/Internship_Trainee/Digiryte%20UK/digiryte-challenge-01/render.yaml) blueprint:
+### Option 1: Free Render Web Service (100% Free Tier)
 1. Push this repo to GitHub.
-2. Go to **Render.com** $\rightarrow$ **New** $\rightarrow$ **Blueprint**.
-3. Connect your GitHub repository. Render will automatically provision both the **Express REST API + React UI** Web Service and a managed **Redis** instance.
+2. Go to **Render.com** $\rightarrow$ Click **New +** $\rightarrow$ **Web Service**.
+3. Select your GitHub repository.
+4. Set:
+   - **Build Command:** `npm install && npm run build`
+   - **Start Command:** `npm start`
+   - **Environment Variables:**
+     - `NODE_ENV`: `production`
+     - `JWT_SECRET`: `your_secure_32_character_secret_key_here`
+     - `JWT_REFRESH_SECRET`: `your_secure_32_character_refresh_key_here`
 
-### Option 2: Railway / Render / Fly.io / Heroku (Manual Web Service)
+### Option 2: Free Vercel / Railway / Koyeb Deployment
 - **Build Command:** `npm run build`
 - **Start Command:** `npm start`
-- **Environment Variables:**
-  - `NODE_ENV`: `production`
-  - `PORT`: `4000` (or platform assigned `$PORT`)
-  - `JWT_SECRET`: `your_secure_32_char_secret_key_here`
-  - `JWT_REFRESH_SECRET`: `your_secure_32_char_refresh_key_here`
+
 
 
 ---
