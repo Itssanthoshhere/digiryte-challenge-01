@@ -220,6 +220,27 @@ digiryte-challenge-01/
 │
 └── package.json                    # Root Monorepo Scripts
 ```
+---
+
+## 🚀 Production Deployment Guide
+
+The project is pre-configured for **instant zero-config deployment** on Render, Vercel, Railway, or any Node.js hosting platform.
+
+### Option 1: Render Deployment (Recommended Blueprint)
+This repo includes a pre-configured [`render.yaml`](file:///Users/sandy/Santhosh/Internship_Trainee/Digiryte%20UK/digiryte-challenge-01/render.yaml) blueprint:
+1. Push this repo to GitHub.
+2. Go to **Render.com** $\rightarrow$ **New** $\rightarrow$ **Blueprint**.
+3. Connect your GitHub repository. Render will automatically provision both the **Express REST API + React UI** Web Service and a managed **Redis** instance.
+
+### Option 2: Railway / Render / Fly.io / Heroku (Manual Web Service)
+- **Build Command:** `npm run build`
+- **Start Command:** `npm start`
+- **Environment Variables:**
+  - `NODE_ENV`: `production`
+  - `PORT`: `4000` (or platform assigned `$PORT`)
+  - `JWT_SECRET`: `your_secure_32_char_secret_key_here`
+  - `JWT_REFRESH_SECRET`: `your_secure_32_char_refresh_key_here`
+
 
 ---
 
