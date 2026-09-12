@@ -231,7 +231,8 @@ This project can be deployed **completely free** without needing paid Redis add-
 2. Go to **Render.com** $\rightarrow$ Click **New +** $\rightarrow$ **Web Service**.
 3. Select your GitHub repository.
 4. Set:
-   - **Build Command:** `npm install && npm run build`
+   - **Build Command:** `npm install --include=optional && cd client && npm install --include=optional && cd .. && npm run build`
+
    - **Start Command:** `npm start`
    - **Environment Variables:**
      - `NODE_ENV`: `production`
