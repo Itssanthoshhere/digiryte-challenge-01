@@ -1,0 +1,100 @@
+@import "tailwindcss";
+
+@layer base {
+  body {
+    font-family: 'Outfit', -apple-system, BlinkMacSystemFont, sans-serif;
+    background-color: #f8fafc;
+    color: #171c26;
+    overflow-x: hidden;
+  }
+
+  code, pre, .font-mono {
+    font-family: 'JetBrains Mono', monospace;
+  }
+}
+
+/* Digiryte Brand Card & Button Design System */
+.digiryte-card {
+  background: #ffffff;
+  border-radius: 20px;
+  box-shadow: 0 4px 25px -4px rgba(0, 0, 0, 0.04), 0 2px 8px -2px rgba(0, 0, 0, 0.02);
+  border: 1px solid #edf2f7;
+  transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+.digiryte-card:hover {
+  box-shadow: 0 12px 35px -8px rgba(219, 68, 53, 0.09), 0 4px 12px -2px rgba(0, 0, 0, 0.03);
+  border-color: rgba(219, 68, 53, 0.3);
+}
+
+.digiryte-btn-primary {
+  background-color: #db4435;
+  color: #ffffff;
+  font-weight: 700;
+  border-radius: 9999px;
+  transition: all 0.25s cubic-bezier(0.4, 0, 0.2, 1);
+  box-shadow: 0 4px 14px rgba(219, 68, 53, 0.25);
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.digiryte-btn-primary:hover {
+  background-color: #b5372b;
+  transform: translateY(-1.5px);
+  box-shadow: 0 8px 22px rgba(219, 68, 53, 0.35);
+}
+
+.digiryte-btn-primary:active {
+  transform: translateY(0);
+}
+
+.digiryte-btn-secondary {
+  background-color: #fff3f2;
+  color: #db4435;
+  font-weight: 700;
+  border-radius: 9999px;
+  border: 1px solid rgba(219, 68, 53, 0.25);
+  transition: all 0.25s ease;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.digiryte-btn-secondary:hover {
+  background-color: #db4435;
+  color: #ffffff;
+  box-shadow: 0 4px 14px rgba(219, 68, 53, 0.2);
+}
+
+.digiryte-badge {
+  background-color: #fff3f2;
+  color: #db4435;
+  border: 1px solid rgba(219, 68, 53, 0.25);
+}
+
+/* Animations & Glass Blur */
+@keyframes fadeIn {
+  from { opacity: 0; transform: translateY(6px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+
+.animate-fade-in {
+  animation: fadeIn 0.3s ease-out forwards;
+}
+
+/* Responsive Custom Scrollbars */
+::-webkit-scrollbar {
+  width: 6px;
+  height: 6px;
+}
+::-webkit-scrollbar-track {
+  background: #f1f5f9;
+}
+::-webkit-scrollbar-thumb {
+  background: #cbd5e1;
+  border-radius: 9999px;
+}
+::-webkit-scrollbar-thumb:hover {
+  background: #94a3b8;
+}
