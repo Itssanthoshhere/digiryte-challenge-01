@@ -56,7 +56,7 @@ export default function Navbar() {
               <span className="relative inline-flex rounded-full h-2 w-2 bg-[#DB4435]"></span>
             </span>
             <span className="text-[#171C26] font-bold">API Online</span>
-            <span className="text-[#5D6D77]">:4000</span>
+            <span className="text-[#5D6D77]">v1.0</span>
           </div>
 
           {/* Identity Persona / Sign Out */}
@@ -114,7 +114,7 @@ export default function Navbar() {
           <div className="flex items-center justify-between pb-3 border-b border-slate-100">
             <div className="flex items-center gap-2 px-3 py-1 rounded-full bg-[#FFF3F2] border border-[#DB4435]/20 text-xs font-mono font-medium">
               <span className="w-2 h-2 rounded-full bg-[#DB4435] animate-pulse"></span>
-              <span className="text-[#171C26] font-bold">API Online :4000</span>
+              <span className="text-[#171C26] font-bold">API Online v1.0</span>
             </div>
 
             {isAuthenticated && (
