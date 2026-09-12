@@ -24,16 +24,6 @@ app.use(express.urlencoded({ extended: true, limit: '10kb' }));
 // Apply Global API Rate Limiting (100 req / 15 mins)
 app.use(globalRateLimiter);
 
-// Paths to compiled React production bundle and static public fallback
-const clientDistPath = path.join(__dirname, '../../client/dist');
-const publicPath = path.join(__dirname, '../public');
-
-if (fs.existsSync(clientDistPath)) {
-  app.use(express.static(clientDistPath));
-} else {
-  app.use(express.static(publicPath));
-}
-
 /**
  * Health Check Endpoint
  */
@@ -47,9 +37,19 @@ app.get('/health', (_req, res) => {
 });
 
 /**
- * API v1 Routes
+ * API v1 Routes (Registered BEFORE static asset serving)
  */
 app.use('/api/v1', routesV1);
+
+// Paths to compiled React production bundle and static public fallback
+const clientDistPath = path.join(__dirname, '../../client/dist');
+const publicPath = path.join(__dirname, '../public');
+
+if (fs.existsSync(clientDistPath)) {
+  app.use(express.static(clientDistPath));
+} else {
+  app.use(express.static(publicPath));
+}
 
 /**
  * Catch-All SPA Fallback / 404 Route Handler
@@ -74,4 +74,5 @@ app.use('*', (req, res) => {
 app.use(errorHandler);
 
 export default app;
+
 
