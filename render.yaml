@@ -1,0 +1,28 @@
+services:
+  - type: web
+    name: digiryte-secure-api
+    env: node
+    buildCommand: npm install && npm run build
+    startCommand: npm start
+    envVars:
+      - key: PORT
+        value: 10000
+      - key: NODE_ENV
+        value: production
+      - key: JWT_SECRET
+        generateValue: true
+      - key: JWT_REFRESH_SECRET
+        generateValue: true
+      - key: JWT_ACCESS_EXPIRATION
+        value: 15m
+      - key: JWT_REFRESH_EXPIRATION
+        value: 7d
+      - key: REDIS_URL
+        fromService:
+          type: redis
+          name: digiryte-redis
+          property: connectionString
+
+  - type: redis
+    name: digiryte-redis
+    ipAllowList: []
