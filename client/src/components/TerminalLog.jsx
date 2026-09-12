@@ -99,7 +99,6 @@ export default function TerminalLog() {
             }
 
             const isSuccess = log.status >= 200 && log.status < 300
-            const statusColor = isSuccess ? 'text-emerald-400' : 'text-[#DB4435]'
             const borderClass = isSuccess ? 'border-emerald-500' : 'border-[#DB4435]'
 
             return (

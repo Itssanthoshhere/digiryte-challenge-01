@@ -59,7 +59,7 @@ export default function ReplayPanel() {
   const handleReplayAttack = async () => {
     if (!lastPayload) return
     setReplayLoading(true)
-    addLog('info', 'REPLAY ATTACK SIMULATION: Re-submitting identical payload with previously registered X-Nonce & X-Timestamp...')
+    addLog({ type: 'info', msg: 'REPLAY ATTACK SIMULATION: Re-submitting identical payload with previously registered X-Nonce & X-Timestamp...' })
 
     await apiRequest(lastPayload.url, {
       method: 'POST',

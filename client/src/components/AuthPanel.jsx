@@ -290,13 +290,29 @@ export default function AuthPanel() {
                 onClick={handleTestRevokedToken}
                 className="w-full py-2.5 bg-slate-100 hover:bg-slate-200 text-[#171C26] border border-slate-200 font-semibold rounded-xl text-xs transition cursor-pointer flex items-center justify-center gap-1.5"
               >
-                <span>Test Revoked Token</span>
+                <span>Test Current Token</span>
               </button>
             </div>
           </div>
         ) : (
-          <div className="mt-4 p-3 bg-amber-50 rounded-xl border border-amber-200 text-xs text-amber-800">
-            💡 Click <strong>Regular User</strong> or <strong>System Admin</strong> above to sign in with test credentials.
+          <div className="mt-4 space-y-3">
+            {revokedToken && (
+              <div className="p-3 bg-rose-50 rounded-xl border border-rose-200 space-y-2">
+                <div className="flex items-center justify-between text-xs font-bold text-rose-900">
+                  <span>🔴 Token Revoked & Blocklisted in Redis</span>
+                  <span className="font-mono text-[10px] bg-rose-200 px-2 py-0.5 rounded">REVOKED</span>
+                </div>
+                <button
+                  onClick={handleTestRevokedToken}
+                  className="w-full py-2 bg-[#DB4435] hover:bg-[#b5372b] text-white font-bold rounded-lg text-xs transition cursor-pointer shadow-xs"
+                >
+                  ⚡ Test API Request With Revoked Token
+                </button>
+              </div>
+            )}
+            <div className="p-3 bg-amber-50 rounded-xl border border-amber-200 text-xs text-amber-800">
+              💡 Click <strong>Regular User</strong> or <strong>System Admin</strong> above to sign in with test credentials.
+            </div>
           </div>
         )}
       </div>
