@@ -1,5 +1,15 @@
 # 🛡️ Digiryte Challenge 01 — Secure REST API & Security Intelligence Dashboard
 
+<p align="center">
+  <a href="https://digiryte-challenge-01.vercel.app/" target="_blank">
+    <img src="https://img.shields.io/badge/🌐_LIVE_DEMO-digiryte--challenge--01.vercel.app-DB4435?style=for-the-badge&logo=vercel&logoColor=white" alt="Live Demo" />
+  </a>
+</p>
+
+<p align="center">
+  <strong>🔗 <a href="https://digiryte-challenge-01.vercel.app/" target="_blank">Click Here to Launch Live Production Security Dashboard 🚀</a></strong>
+</p>
+
 Welcome to the **Digiryte Technical Assessment Challenge 01** codebase! 🚀
 
 This repository provides a production-ready, enterprise-grade **Node.js, Express, and TypeScript REST API** bundled with a modern **React 19 + Tailwind CSS** interactive dashboard.
