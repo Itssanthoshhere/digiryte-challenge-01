@@ -6,10 +6,6 @@
   </a>
 </p>
 
-<p align="center">
-  <strong>🔗 <a href="https://digiryte-challenge-01.vercel.app/" target="_blank">Click Here to Launch Live Production Security Dashboard 🚀</a></strong>
-</p>
-
 Welcome to the **Digiryte Technical Assessment Challenge 01** codebase! 🚀
 
 This repository provides a production-ready, enterprise-grade **Node.js, Express, and TypeScript REST API** bundled with a modern **React 19 + Tailwind CSS** interactive dashboard.
