@@ -55,16 +55,6 @@ function DashboardContent() {
             </div>
           </div>
 
-          <div className="flex flex-wrap items-center justify-center gap-4 sm:gap-6 font-mono text-xs font-semibold text-[#5D6D77]">
-            <span>Node.js / Express</span>
-            <span>•</span>
-            <span>TypeScript</span>
-            <span>•</span>
-            <span>Redis</span>
-            <span>•</span>
-            <span>React 19</span>
-          </div>
-
         </div>
       </footer>
     </div>
