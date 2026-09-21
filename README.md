@@ -24,9 +24,10 @@ It is designed to be **simple to understand**, **easy to run out-of-the-box**, a
    - [3. One-Time Nonce Anti-Replay Defense](#3-one-time-nonce-anti-replay-defense)
    - [4. Input Validation & HTML Sanitization](#4-input-validation--html-sanitization)
    - [5. API Rate Limiting](#5-api-rate-limiting)
-4. [🖥️ Interactive UI Dashboard Features](#️-interactive-ui-dashboard-features)
-5. [📡 Complete API Reference](#-complete-api-reference)
-6. [❓ FAQ & Troubleshooting](#-faq--troubleshooting)
+4. [🏛️ Enterprise AWS Infrastructure as Code (AWS 6 Pillars)](#️-enterprise-aws-infrastructure-as-code-aws-6-pillars)
+5. [🖥️ Interactive UI Dashboard Features](#️-interactive-ui-dashboard-features)
+6. [📡 Complete API Reference](#-complete-api-reference)
+7. [❓ FAQ & Troubleshooting](#-faq--troubleshooting)
 
 ---
 
@@ -119,6 +120,19 @@ To protect sensitive financial transfers (`POST /api/v1/transactions/transfer`),
 
 - **Global Rate Limiter:** Limits requests to `100 requests per 15 minutes` per IP address.
 - **Sensitive Rate Limiter:** Protects auth & financial endpoints with a stricter limit of `10 requests per minute`.
+
+---
+
+## 🏛️ Enterprise AWS Infrastructure as Code (AWS 6 Pillars)
+
+This repository includes production-ready **Infrastructure as Code (IaC)** in [`terraform/`](file:///Users/sandy/Santhosh/Internship_Trainee/Digiryte%20UK/digiryte-challenge-01/terraform) to deploy the API & Dashboard to Amazon Web Services (AWS) aligned with all **6 Pillars of the AWS Well-Architected Framework**:
+
+1. **⚡ Operational Excellence**: Automated Terraform IaC, ECR Container Vulnerability Scanning (`scan_on_push`), and CloudWatch log groups + health check metrics (`GET /health`).
+2. **🛡️ Security**: Regional AWS WAF v2 Web ACL (100 req/5m IP rate limiting & Anti-Replay shield), KMS secrets encryption, private VPC subnet isolation, and IAM least-privilege roles.
+3. **🔄 Reliability**: Multi-AZ deployment across Availability Zones (`us-east-1a`/`1b`), ALB target group health management, and ElastiCache Redis cluster failover.
+4. **⚡ Performance Efficiency**: Global CloudFront CDN edge caching for React UI assets, and AWS Graviton2 (`ARM64`) processors for 40% higher price-performance.
+5. **💰 Cost Optimization (Zero-Waste & Cost-Efficient)**: $0/mo S3 + CloudFront serverless static web hosting, pay-as-you-go Fargate Spot container tasks, and `cache.t4g.micro` Redis ($0/mo on AWS Free Tier, <$10/mo in production).
+6. **🌱 Sustainability**: ARM64 Graviton processors reduce compute energy consumption by up to 60%.
 
 ---
 

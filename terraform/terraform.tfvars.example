@@ -1,0 +1,8 @@
+aws_region        = "us-east-1"
+environment       = "production"
+project_name      = "digiryte-secure-api"
+fargate_cpu       = 256
+fargate_memory    = 512
+use_fargate_spot  = true
+jwt_secret        = "digiryte_super_secret_jwt_access_key_2026_enterprise_prod"
+jwt_refresh_secret = "digiryte_super_secret_jwt_refresh_key_2026_enterprise_prod"
