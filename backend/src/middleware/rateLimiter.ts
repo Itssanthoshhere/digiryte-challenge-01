@@ -1,5 +1,8 @@
+import { NextFunction, Request, Response } from 'express';
 import rateLimit from 'express-rate-limit';
 import { env } from '../config/env';
+import { dbStore } from '../services/dbStore';
+import { AppError } from './errorHandler';
 
 /**
  * Standard global rate limiter for general API requests.
@@ -34,3 +37,21 @@ export const sensitiveRateLimiter = rateLimit({
   },
   skip: () => env.NODE_ENV === 'test',
 });
+
+/**
+ * Account Lockout Policy Middleware: Enforces 15-minute lock after 5 failed login attempts.
+ */
+export const checkAccountLockout = async (req: Request, _res: Response, next: NextFunction): Promise<void> => {
+  try {
+    const { email } = req.body;
+    if (email) {
+      const isLocked = await dbStore.isAccountLocked(email);
+      if (isLocked) {
+        throw new AppError('Account is locked due to 5 consecutive failed login attempts. Please try again in 15 minutes.', 429, 'ACCOUNT_LOCKED');
+      }
+    }
+    next();
+  } catch (error) {
+    next(error);
+  }
+};

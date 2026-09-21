@@ -6,6 +6,7 @@ interface CacheStore {
   set(key: string, value: string, mode?: 'EX', durationSeconds?: number): Promise<'OK' | null>;
   setnx(key: string, value: string, ttlSeconds: number): Promise<boolean>;
   del(key: string): Promise<number>;
+  keys(pattern: string): Promise<string[]>;
   isRedisConnected(): boolean;
 }
 
@@ -42,6 +43,18 @@ class InMemoryCacheStore implements CacheStore {
     return deleted ? 1 : 0;
   }
 
+  async keys(pattern: string): Promise<string[]> {
+    const prefix = pattern.replace('*', '');
+    const matched: string[] = [];
+    for (const key of this.store.keys()) {
+      if (key.startsWith(prefix)) {
+        const val = await this.get(key);
+        if (val !== null) matched.push(key);
+      }
+    }
+    return matched;
+  }
+
   isRedisConnected(): boolean {
     return false;
   }
@@ -61,7 +74,11 @@ class RedisCacheStore implements CacheStore {
         connectTimeout: 2000,
         retryStrategy: (times) => {
           if (times > 2) {
-            console.warn('⚠️ Redis connection failed. Falling back to internal memory cache.');
+            if (env.NODE_ENV === 'production') {
+              console.error('🚨 FAIL-CLOSED SECURITY POLICY: Redis connection failed in production. Refusing fallback.');
+            } else {
+              console.warn('⚠️ Redis connection failed. Falling back to internal memory cache.');
+            }
             this.usingFallback = true;
             return null; // Stop retrying
           }
@@ -80,7 +97,14 @@ class RedisCacheStore implements CacheStore {
     }
   }
 
+  private checkProductionFailClosed() {
+    if (env.NODE_ENV === 'production' && (this.usingFallback || !this.client || this.client.status !== 'ready')) {
+      throw new Error('503: REDIS_UNAVAILABLE - Production Fail-Closed policy active. Redis security store is unavailable.');
+    }
+  }
+
   async get(key: string): Promise<string | null> {
+    this.checkProductionFailClosed();
     if (this.usingFallback || !this.client) {
       return this.fallbackMemoryStore.get(key);
     }
@@ -88,11 +112,13 @@ class RedisCacheStore implements CacheStore {
       return await this.client.get(key);
     } catch {
       this.usingFallback = true;
+      this.checkProductionFailClosed();
       return this.fallbackMemoryStore.get(key);
     }
   }
 
   async set(key: string, value: string, mode?: 'EX', durationSeconds?: number): Promise<'OK' | null> {
+    this.checkProductionFailClosed();
     if (this.usingFallback || !this.client) {
       return this.fallbackMemoryStore.set(key, value, mode, durationSeconds);
     }
@@ -103,25 +129,28 @@ class RedisCacheStore implements CacheStore {
       return await this.client.set(key, value);
     } catch {
       this.usingFallback = true;
+      this.checkProductionFailClosed();
       return this.fallbackMemoryStore.set(key, value, mode, durationSeconds);
     }
   }
 
   async setnx(key: string, value: string, ttlSeconds: number): Promise<boolean> {
+    this.checkProductionFailClosed();
     if (this.usingFallback || !this.client) {
       return this.fallbackMemoryStore.setnx(key, value, ttlSeconds);
     }
     try {
-      // SET key value EX ttlSeconds NX returns "OK" if key set, null if key exists
       const res = await this.client.set(key, value, 'EX', ttlSeconds, 'NX');
       return res === 'OK';
     } catch {
       this.usingFallback = true;
+      this.checkProductionFailClosed();
       return this.fallbackMemoryStore.setnx(key, value, ttlSeconds);
     }
   }
 
   async del(key: string): Promise<number> {
+    this.checkProductionFailClosed();
     if (this.usingFallback || !this.client) {
       return this.fallbackMemoryStore.del(key);
     }
@@ -129,7 +158,22 @@ class RedisCacheStore implements CacheStore {
       return await this.client.del(key);
     } catch {
       this.usingFallback = true;
+      this.checkProductionFailClosed();
       return this.fallbackMemoryStore.del(key);
+    }
+  }
+
+  async keys(pattern: string): Promise<string[]> {
+    this.checkProductionFailClosed();
+    if (this.usingFallback || !this.client) {
+      return this.fallbackMemoryStore.keys(pattern);
+    }
+    try {
+      return await this.client.keys(pattern);
+    } catch {
+      this.usingFallback = true;
+      this.checkProductionFailClosed();
+      return this.fallbackMemoryStore.keys(pattern);
     }
   }
 

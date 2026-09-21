@@ -14,8 +14,8 @@ router.use(authenticateJWT);
 router.post(
   '/transfer',
   sensitiveRateLimiter,
-  preventReplayAttack,
   validateRequest(transferTransactionSchema),
+  preventReplayAttack,
   TransactionController.transfer
 );
 

@@ -18,3 +18,9 @@ services:
         value: 15m
       - key: JWT_REFRESH_EXPIRATION
         value: 7d
+      - key: REDIS_URL
+        value: redis://localhost:6379
+      - key: STRICT_REDIS
+        value: "true"
+      - key: CORS_ORIGINS
+        value: "https://digiryte-challenge-01.vercel.app"

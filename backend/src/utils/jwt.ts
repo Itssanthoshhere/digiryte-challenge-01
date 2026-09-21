@@ -8,10 +8,12 @@ export interface TokenPair {
   refreshToken: string;
   expiresIn: string;
   jti: string;
+  refreshJti: string;
 }
 
 export const generateTokens = (userId: string, email: string, role: UserRole): TokenPair => {
   const jti = generateUUID();
+  const refreshJti = generateUUID();
 
   const accessPayload: Omit<JWTPayload, 'iat' | 'exp'> = {
     jti,
@@ -22,7 +24,7 @@ export const generateTokens = (userId: string, email: string, role: UserRole): T
   };
 
   const refreshPayload: Omit<JWTPayload, 'iat' | 'exp'> = {
-    jti: generateUUID(),
+    jti: refreshJti,
     sub: userId,
     email,
     role,
@@ -31,10 +33,16 @@ export const generateTokens = (userId: string, email: string, role: UserRole): T
 
   const accessOptions: SignOptions = {
     expiresIn: env.JWT_ACCESS_EXPIRATION as SignOptions['expiresIn'],
+    algorithm: 'HS256',
+    issuer: 'digiryte-secure-api',
+    audience: 'digiryte-client',
   };
 
   const refreshOptions: SignOptions = {
     expiresIn: env.JWT_REFRESH_EXPIRATION as SignOptions['expiresIn'],
+    algorithm: 'HS256',
+    issuer: 'digiryte-secure-api',
+    audience: 'digiryte-client',
   };
 
   const accessToken = jwt.sign(accessPayload, env.JWT_SECRET, accessOptions);
@@ -45,12 +53,18 @@ export const generateTokens = (userId: string, email: string, role: UserRole): T
     refreshToken,
     expiresIn: env.JWT_ACCESS_EXPIRATION,
     jti,
+    refreshJti,
   };
 };
 
 export const verifyAccessToken = (token: string): JWTPayload => {
   try {
-    const payload = jwt.verify(token, env.JWT_SECRET) as JWTPayload;
+    const payload = jwt.verify(token, env.JWT_SECRET, {
+      algorithms: ['HS256'],
+      issuer: 'digiryte-secure-api',
+      audience: 'digiryte-client',
+    }) as JWTPayload;
+
     if (payload.type !== 'access') {
       throw new Error('Invalid token type');
     }
@@ -62,7 +76,12 @@ export const verifyAccessToken = (token: string): JWTPayload => {
 
 export const verifyRefreshToken = (token: string): JWTPayload => {
   try {
-    const payload = jwt.verify(token, env.JWT_REFRESH_SECRET) as JWTPayload;
+    const payload = jwt.verify(token, env.JWT_REFRESH_SECRET, {
+      algorithms: ['HS256'],
+      issuer: 'digiryte-secure-api',
+      audience: 'digiryte-client',
+    }) as JWTPayload;
+
     if (payload.type !== 'refresh') {
       throw new Error('Invalid token type');
     }

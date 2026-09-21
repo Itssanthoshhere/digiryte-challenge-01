@@ -16,6 +16,7 @@ const envSchema = z.object({
   RATE_LIMIT_WINDOW_MS: z.string().default('900000').transform((val) => parseInt(val, 10)),
   RATE_LIMIT_MAX_REQUESTS: z.string().default('100').transform((val) => parseInt(val, 10)),
   SENSITIVE_RATE_LIMIT_MAX_REQUESTS: z.string().default('10').transform((val) => parseInt(val, 10)),
+  CORS_ORIGINS: z.string().optional().default('https://digiryte-challenge-01.vercel.app'),
 });
 
 const parseEnv = () => {

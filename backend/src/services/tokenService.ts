@@ -28,7 +28,7 @@ export class TokenService {
   }
 
   /**
-   * Stores a active refresh token for a user.
+   * Stores an active refresh token for a user.
    */
   static async storeRefreshToken(userId: string, jti: string, ttlSeconds = 604800): Promise<void> {
     const key = `${REFRESH_TOKEN_PREFIX}${userId}:${jti}`;
@@ -36,10 +36,32 @@ export class TokenService {
   }
 
   /**
-   * Invalidate a refresh token.
+   * Checks if a refresh token is still active in Redis.
+   */
+  static async isRefreshTokenActive(userId: string, jti: string): Promise<boolean> {
+    const key = `${REFRESH_TOKEN_PREFIX}${userId}:${jti}`;
+    const value = await redisStore.get(key);
+    return value !== null;
+  }
+
+  /**
+   * Invalidate a specific refresh token.
    */
   static async invalidateRefreshToken(userId: string, jti: string): Promise<void> {
     const key = `${REFRESH_TOKEN_PREFIX}${userId}:${jti}`;
     await redisStore.del(key);
+  }
+
+  /**
+   * Revokes all active refresh tokens for a user (used when token reuse / theft is detected).
+   */
+  static async revokeAllForUser(userId: string): Promise<void> {
+    const pattern = `${REFRESH_TOKEN_PREFIX}${userId}:*`;
+    const keys = await redisStore.keys(pattern);
+    if (keys && keys.length > 0) {
+      for (const k of keys) {
+        await redisStore.del(k);
+      }
+    }
   }
 }

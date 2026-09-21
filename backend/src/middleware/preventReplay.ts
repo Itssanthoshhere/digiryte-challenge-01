@@ -1,12 +1,14 @@
-import { NextFunction, Request, Response } from 'express';
+import crypto from 'crypto';
+import { NextFunction, Response } from 'express';
 import { env } from '../config/env';
 import { redisStore } from '../config/redis';
+import { AuthenticatedRequest } from '../types';
 import { AppError } from './errorHandler';
 
 const NONCE_REDIS_PREFIX = 'replay:nonce:';
 
 export const preventReplayAttack = async (
-  req: Request,
+  req: AuthenticatedRequest,
   _res: Response,
   next: NextFunction
 ): Promise<void> => {
@@ -36,7 +38,6 @@ export const preventReplayAttack = async (
     }
 
     const currentTime = Date.now();
-    // Allow timestamps provided in seconds or milliseconds
     const requestTimeMs = requestTime < 10000000000 ? requestTime * 1000 : requestTime;
     const diffInSeconds = Math.abs(currentTime - requestTimeMs) / 1000;
 
@@ -48,13 +49,19 @@ export const preventReplayAttack = async (
       );
     }
 
-    // Verify nonce uniqueness in Redis store using setnx with TTL
-    const nonceKey = `${NONCE_REDIS_PREFIX}${nonce}`;
+    // Compute HMAC binding: Method + Path + Body JSON + Timestamp + User ID
+    const userId = req.user?.id || 'anonymous';
+    const bodyString = req.body ? JSON.stringify(req.body) : '';
+    const payloadToSign = `${req.method}:${req.originalUrl || req.url}:${bodyString}:${timestampStr}:${userId}`;
+    const hmacSig = crypto.createHmac('sha256', env.JWT_SECRET).update(payloadToSign).digest('hex');
+
+    // Bind nonce + HMAC signature in Redis store atomically using setnx
+    const nonceKey = `${NONCE_REDIS_PREFIX}${nonce}:${hmacSig}`;
     const isNewNonce = await redisStore.setnx(nonceKey, 'used', env.REPLAY_NONCE_TTL_SECONDS);
 
     if (!isNewNonce) {
       throw new AppError(
-        'Replay attack detected! This X-Nonce has already been used.',
+        'Replay attack detected! This request with identical X-Nonce, body, and timestamp has already been processed.',
         409,
         'REPLAY_ATTACK_DETECTED'
       );

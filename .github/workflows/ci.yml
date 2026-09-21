@@ -1,0 +1,54 @@
+name: 🛡️ Digiryte Security & Quality Gates CI
+
+on:
+  push:
+    branches: [ main, master ]
+  pull_request:
+    branches: [ main, master ]
+
+jobs:
+  build-and-test:
+    name: Build, Lint & Supertest Integration Suite
+    runs-on: ubuntu-latest
+
+    services:
+      redis:
+        image: redis:7-alpine
+        ports:
+          - 6379:6379
+        options: >-
+          --health-cmd "redis-cli ping"
+          --health-interval 10s
+          --health-timeout 5s
+          --health-retries 5
+
+    steps:
+      - name: Checkout Code
+        uses: actions/checkout@v4
+
+      - name: Setup Node.js 20
+        uses: actions/setup-node@v4
+        with:
+          node-version: '20'
+          cache: 'npm'
+
+      - name: Install Dependencies
+        run: |
+          npm install
+          cd backend && npm install --include=dev && cd ..
+          cd client && npm install --include=dev && cd ..
+
+      - name: Run Security Audit
+        run: npm audit --audit-level=high || true
+
+      - name: Build Monorepo (Client & Backend)
+        run: npm run build
+
+      - name: Run Supertest Integration Tests
+        env:
+          NODE_ENV: test
+          REDIS_URL: redis://localhost:6379
+          JWT_SECRET: ci_testing_super_secret_jwt_key_2026
+          JWT_REFRESH_SECRET: ci_testing_super_secret_jwt_refresh_key_2026
+        run: |
+          cd backend && npm test

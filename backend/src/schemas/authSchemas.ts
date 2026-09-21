@@ -6,9 +6,9 @@ const sanitizeString = z.string().trim().transform((val) => val.replace(/<[^>]*>
 export const registerSchema = z.object({
   body: z.object({
     email: sanitizeString.pipe(z.string().email('Must be a valid email address')),
-    password: z.string().min(8, 'Password must be at least 8 characters long'),
+    password: z.string().min(8, 'Password must be at least 8 characters long').max(72, 'Password cannot exceed 72 characters'),
     name: sanitizeString.pipe(z.string().min(2, 'Name must be at least 2 characters')),
-    role: z.enum(['USER', 'ADMIN']).optional().default('USER'),
+    // 'role' removed on purpose: new self-registered users are ALWAYS assigned 'USER'
   }),
 });
 
